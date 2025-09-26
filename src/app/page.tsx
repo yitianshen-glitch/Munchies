@@ -1,103 +1,219 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+import { useState, useEffect, useMemo } from "react";
+import Navbar from "@/components/Navbar";
+import RestaurantCard from "@/components/RestaurantCard";
+import FilterSidebar from "@/components/filters/FilterSidebar";
+import TopbarFilters from "@/components/filters/TopbarFilters";
+import { useFilters } from "@/hooks/useFilters";
+import { getRestaurants, getFilters } from "@/lib/api";
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+function getCategoryFromFilterIds(filterIds: string[], availableFilters: any[]) {
+  if (!filterIds || !availableFilters || filterIds.length === 0) return "Unknown";
+  
+  const matchingFilter = availableFilters.find(filter => 
+    filterIds.includes(filter.id)
   );
+  
+  return matchingFilter ? matchingFilter.name : "Unknown";
+}
+
+function getDeliveryTimeRange(minutes: number): string {
+  if (minutes <= 10) return "0-10 min";
+  if (minutes <= 30) return "10-30 min";
+  if (minutes <= 60) return "30-60 min";
+  return "1 hour+";
+}
+
+function getPriceRangeFromId(priceRangeId: string): string {
+  const ranges = ["$", "$$", "$$$", "$$$$"];
+  return ranges[Math.floor(Math.random() * ranges.length)];
+}
+
+function transformRestaurant(apiRestaurant: any, isOpen: boolean = true, availableFilters: any[] = []) {
+
+  const category = getCategoryFromFilterIds(apiRestaurant.filter_ids, availableFilters);
+  return {
+    id: apiRestaurant.id,
+    name: apiRestaurant.name,
+    status: isOpen ? "open" as const : "closed" as const,
+    category: getCategoryFromFilterIds(apiRestaurant.filter_ids, availableFilters),
+    filterIds: apiRestaurant.filter_ids, 
+    deliveryTime: getDeliveryTimeRange(apiRestaurant.delivery_time_minutes),
+    image: `https://work-test-web-2024-eze6j4scpq-lz.a.run.app${apiRestaurant.image_url}`,
+    priceRange: getPriceRangeFromId(apiRestaurant.price_range_id),
+    reopen: !isOpen ? "Opens tomorrow at 12 pm" : undefined,
+  };
+}
+
+export default function HomePage() {
+  const { filters, toggleFilter } = useFilters();
+  const [restaurants, setRestaurants] = useState<any[]>([]);
+  const [filtersData, setFiltersData] = useState<any[]>([]);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        
+        const filtersData = await getFilters();
+        const restaurantsData = await getRestaurants();
+        setFiltersData(filtersData); 
+        
+        const transformedRestaurants = restaurantsData.map((restaurant: any) => 
+          transformRestaurant(restaurant, Math.random() > 0.3, filtersData)
+        );
+        
+        setRestaurants(transformedRestaurants);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to load restaurants");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const filteredRestaurants = useMemo(() => {
+  if (restaurants.length === 0) return [];
+  
+  return restaurants.filter((r) => {
+    const matchCategory =
+      filters.categories.length === 0 ||
+      //filters.categories.includes(r.category);
+      filters.categories.some(filterCategory => {
+        const matchesCategory = r.category === filterCategory;
+        const filterObj = filtersData.find(f => f.name === filterCategory);
+        const matchesFilterId = filterObj && r.filterIds && r.filterIds.includes(filterObj.id);
+        if (r.name === "Davids Deli" && filterCategory === "Fries") {
+          console.log(`Davids Deli: matchesCategory=${matchesCategory}, matchesFilterId=${matchesFilterId}`);
+        }
+        
+        return matchesCategory || matchesFilterId;
+      });
+
+    const matchDelivery =
+      filters.deliveryTimes.length === 0 ||
+      (r.deliveryTime && filters.deliveryTimes.includes(r.deliveryTime));
+
+    const matchPrice =
+      filters.priceRanges.length === 0 ||
+      filters.priceRanges.includes(r.priceRange);
+
+    return matchCategory && matchDelivery && matchPrice;
+  }); 
+  }, [filters, restaurants, filtersData]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex min-h-screen bg-gray-50 gap-6">
+          <div className="w-64 flex-shrink-0 m-6 p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
+            <h2 className="text-xl font-semibold mb-4">Filter</h2>
+            <p className="text-gray-500">Loading filters...</p>
+          </div>
+          <section className="flex-1 min-w-0 p-6">
+            <div className="overflow-x-auto mb-6">
+              <div className="flex gap-4 pb-2">
+                <div className="w-32 h-16 bg-gray-200 rounded-xl animate-pulse"></div>
+                <div className="w-32 h-16 bg-gray-200 rounded-xl animate-pulse"></div>
+                <div className="w-32 h-16 bg-gray-200 rounded-xl animate-pulse"></div>
+              </div>
+            </div>
+            <div className="flex items-center justify-center h-64">
+              <p className="text-gray-500">Loading restaurants...</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex min-h-screen bg-gray-50 gap-6">
+          <div className="w-64 flex-shrink-0 m-6 p-6 bg-white rounded-2xl border border-red-200 shadow-sm">
+            <h2 className="text-xl font-semibold mb-4">Filter</h2>
+            <p className="text-red-500">Error loading filters</p>
+          </div>
+          <section className="flex-1 min-w-0 p-6">
+            <div className="flex items-center justify-center h-64">
+              <p className="text-red-500">{error}</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+  <div className="flex flex-col min-h-screen">
+    <Navbar />
+    <main className="flex min-h-screen bg-gray-50 gap-6">
+      <div className="hidden lg:block w-64 flex-shrink-0">
+        <FilterSidebar filters={filters} toggleFilter={toggleFilter} />
+      </div>
+
+      <section className="flex-1 min-w-0 p-3 lg:p-6">
+        <div className="lg:hidden mb-4">
+          <button 
+            onClick={() => setShowMobileFilters(true)}
+            className="w-full bg-white border border-gray-200 rounded-xl p-3 flex items-center justify-between shadow-sm"
+          >
+            <span className="font-medium">Filters</span>
+            <span className="text-gray-500">▼</span>
+          </button>
+        </div>
+
+        <TopbarFilters filters={filters} toggleFilter={toggleFilter} />
+
+        <h2 className="text-2xl lg:text-3xl font-semibold mb-4">Restaurant's</h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+          {filteredRestaurants.length > 0 ? (
+            filteredRestaurants.map((res) => (
+              <RestaurantCard key={res.id} restaurant={res} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8">
+              <p className="text-gray-500 text-lg">No restaurants match the filters.</p>
+              <p className="text-gray-400 text-sm mt-2">
+                Try removing some filters to see more results.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
+
+    {showMobileFilters && (
+      <div className="lg:hidden fixed inset-0 z-50 bg-black bg-opacity-50">
+        <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <div className="sticky top-0 bg-white p-4 border-b border-gray-200 flex items-center justify-between shadow-sm z-10">
+            <h3 className="text-lg font-semibold">Filters</h3>
+            <button 
+              onClick={() => setShowMobileFilters(false)}
+              className="text-gray-500 text-xl p-1 hover:bg-gray-100 rounded-full"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4">
+            <FilterSidebar filters={filters} toggleFilter={toggleFilter} />
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
 }
