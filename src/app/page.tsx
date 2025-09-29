@@ -42,7 +42,8 @@ function transformRestaurant(apiRestaurant: any, isOpen: boolean = true, availab
     deliveryTime: getDeliveryTimeRange(apiRestaurant.delivery_time_minutes),
     image: `https://work-test-web-2024-eze6j4scpq-lz.a.run.app${apiRestaurant.image_url}`,
     priceRange: getPriceRangeFromId(apiRestaurant.price_range_id),
-    reopen: !isOpen ? "Opens tomorrow at 12 pm" : undefined,
+    // reopen: !isOpen ? "Opens tomorrow at 12 pm" : undefined,
+    reopen: !apiRestaurant.is_open ? apiRestaurant.next_opening : undefined,
   };
 }
 
