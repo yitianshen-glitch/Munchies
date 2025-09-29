@@ -37,7 +37,7 @@ function transformRestaurant(apiRestaurant: any, isOpen: boolean = true, availab
     id: apiRestaurant.id,
     name: apiRestaurant.name,
     status: isOpen ? "open" as const : "closed" as const,
-    category: getCategoryFromFilterIds(apiRestaurant.filter_ids, availableFilters),
+    category,
     filterIds: apiRestaurant.filter_ids, 
     deliveryTime: getDeliveryTimeRange(apiRestaurant.delivery_time_minutes),
     image: `https://work-test-web-2024-eze6j4scpq-lz.a.run.app${apiRestaurant.image_url}`,
