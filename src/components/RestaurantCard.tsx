@@ -1,12 +1,14 @@
-type Restaurant = {
-  id: number;
-  name: string;
-  status: "open" | "closed";
-  deliveryTime?: string;
-  reopen?: string;
-  image: string;
-  category?: string; 
-};
+// type Restaurant = {
+//   id: number;
+//   name: string;
+//   status: "open" | "closed";
+//   deliveryTime?: string;
+//   reopen?: string;
+//   image: string;
+//   category?: string; 
+// };
+
+import { Restaurant } from '@/types/restaurant';
 
 export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const { name, status, deliveryTime, reopen, image, category } = restaurant;
