@@ -2,12 +2,12 @@
 
 import { useFilters } from "@/hooks/useFilters";
 import { ApiFilter } from "@/lib/api";
+import { DELIVERY_TIMES } from "@/utils/format";
 
 type Props = {
   availableFilters: ApiFilter[];
 };
 
-const DELIVERY_TIMES = ["0-10 min", "10-30 min", "30-60 min", "1 hour+"];
 const PRICE_RANGES = ["$", "$$", "$$$", "$$$$"];
 
 export default function FilterSidebar({ availableFilters }: Props) {
