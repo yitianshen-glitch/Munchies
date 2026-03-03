@@ -33,7 +33,7 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
 
       <div className="flex items-end flex-1">
         <h3
-          className={`absolute bottom-2 left-5 text-lg font-normal ${
+          className={`absolute bottom-2 left-5 right-14 text-lg font-normal truncate ${
             isOpen ? "text-gray-900" : "text-gray-400"
           }`}
         >
