@@ -1,12 +1,14 @@
 const API_BASE_URL = "https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api";
+export const API_IMG_BASE = "https://work-test-web-2024-eze6j4scpq-lz.a.run.app";
 
 export interface ApiRestaurant {
   id: string;
   name: string;
   rating: number;
-  filterIds: string[];
+  filter_ids: string[];
   image_url: string;
   delivery_time_minutes: number;
+  price_range_id: string;
 }
 
 export interface ApiFilter {
@@ -21,7 +23,7 @@ export interface RestaurantsResponse {
 
 export interface OpenStatus {
   restaurant_id: string;
-  is_currently_open: boolean;
+  is_open: boolean;
 }
 
 export interface PriceRange {
@@ -31,10 +33,10 @@ export interface PriceRange {
 
 export async function getRestaurants(): Promise<ApiRestaurant[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/restaurants`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    const response = await fetch(`${API_BASE_URL}/restaurants`, {
+      next: { revalidate: 60 },
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data: RestaurantsResponse = await response.json();
     return data.restaurants;
   } catch (error) {
@@ -45,50 +47,25 @@ export async function getRestaurants(): Promise<ApiRestaurant[]> {
 
 export async function getFilters(): Promise<ApiFilter[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/filter`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    const response = await fetch(`${API_BASE_URL}/filter`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data = await response.json();
-    
-    console.log("🔍 getFilters raw response:", data);
-    
-    // API returns { filters: [...] }, not direct array
-    if (data && Array.isArray(data.filters)) {
-      return data.filters;
-    } else {
-      console.warn("🔍 Unexpected filter API response format:", data);
-      return [];
-    }
-    
+    return Array.isArray(data.filters) ? data.filters : [];
   } catch (error) {
     console.error("Error fetching filters:", error);
     return [];
   }
 }
 
-export async function getRestaurant(id: string): Promise<ApiRestaurant | null> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/restaurants/${id}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data: ApiRestaurant = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching restaurant:", error);
-    return null;
-  }
-}
-
 export async function getOpenStatus(id: string): Promise<OpenStatus | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/open/${id}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data: OpenStatus = await response.json();
-    return data;
+    const response = await fetch(`${API_BASE_URL}/open/${id}`, {
+      next: { revalidate: 60 },
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
   } catch (error) {
     console.error("Error fetching open status:", error);
     return null;
@@ -97,14 +74,41 @@ export async function getOpenStatus(id: string): Promise<OpenStatus | null> {
 
 export async function getPriceRange(id: string): Promise<PriceRange | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/price-range/${id}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data: PriceRange = await response.json();
-    return data;
+    const response = await fetch(`${API_BASE_URL}/price-range/${id}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
   } catch (error) {
     console.error("Error fetching price range:", error);
+    return null;
+  }
+}
+
+export async function getRestaurant(id: string): Promise<ApiRestaurant | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/restaurants/${id}`, {
+      next: { revalidate: 60 },
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.restaurant ?? data;
+  } catch (error) {
+    console.error("Error fetching restaurant:", error);
+    return null;
+  }
+}
+
+export async function getFilter(id: string): Promise<ApiFilter | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/filter/${id}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.filter ?? data;
+  } catch (error) {
+    console.error("Error fetching filter:", error);
     return null;
   }
 }

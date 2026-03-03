@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Munchies
 
-## Getting Started
+Restaurant discovery app built with Next.js 15 App Router. Browse and filter restaurants by food category, delivery time, and price range.
 
-First, run the development server:
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Running
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server at http://localhost:3000 |
+| `npm run build` | Build for production |
+| `npm start` | Start production server |
+| `npm test` | Run tests in watch mode |
+| `npm run test:run` | Run tests once |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+- **Next.js 15** — App Router, Server Components, SSR
+- **TypeScript** — full type safety
+- **Tailwind CSS v4** — styling and responsive layout
+- **Vitest + React Testing Library** — unit and component tests
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/
+│   ├── page.tsx                  # Home — restaurant list with filters
+│   └── restaurants/[id]/page.tsx # Restaurant detail page
+├── components/       # UI components
+│   └── filters/      # Filter sidebar and topbar
+├── hooks/            # useFilters — URL-based filter state
+├── lib/              # API client (api.ts)
+├── types/            # Shared TypeScript types
+└── utils/            # Pure functions (format, filterRestaurants)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+tests/
+├── unit/             # Pure function tests
+├── components/       # Component rendering tests
+└── integration/      # Filter logic integration tests
+```
 
-## Deploy on Vercel
+## API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Data is fetched from `https://work-test-web-2024-eze6j4scpq-lz.a.run.app/api`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Endpoint | Used for |
+|---|---|
+| `GET /restaurants` | Restaurant list (home page) |
+| `GET /restaurants/{id}` | Single restaurant (detail page) |
+| `GET /filter` | Food category filters |
+| `GET /filter/{id}` | Category image and name (detail page) |
+| `GET /open/{id}` | Open/closed status per restaurant |
+| `GET /price-range/{id}` | Price range label per restaurant |
