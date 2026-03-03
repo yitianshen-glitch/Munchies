@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Restaurant } from '@/types/restaurant';
 
 export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
@@ -38,9 +39,11 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
         >
           {name}
         </h3>
-        <img
+        <Image
           src={image}
           alt={name}
+          width={144}
+          height={144}
           className="absolute -top-7 -right-7 w-36 h-36 object-contain"
         />
       </div>

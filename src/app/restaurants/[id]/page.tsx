@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { getRestaurant, getOpenStatus, getPriceRange, getFilter, API_IMG_BASE } from "@/lib/api";
 import { getDeliveryTimeRange } from "@/utils/format";
@@ -39,11 +40,12 @@ export default async function RestaurantPage({ params }: PageProps) {
           </Link>
 
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="relative h-64 bg-gray-100 flex items-center justify-center">
-              <img
+            <div className="relative h-64 bg-gray-100">
+              <Image
                 src={`${API_IMG_BASE}${restaurant.image_url}`}
                 alt={restaurant.name}
-                className="h-full w-full object-contain p-8"
+                fill
+                className="object-contain p-8"
               />
             </div>
 
@@ -66,9 +68,11 @@ export default async function RestaurantPage({ params }: PageProps) {
 
               {categoryFilter && (
                 <div className="flex items-center gap-2 mb-4">
-                  <img
+                  <Image
                     src={`${API_IMG_BASE}${categoryFilter.image_url}`}
                     alt={categoryFilter.name}
+                    width={20}
+                    height={20}
                     className="w-5 h-5 object-contain"
                   />
                   <span className="text-sm text-gray-600">{categoryFilter.name}</span>

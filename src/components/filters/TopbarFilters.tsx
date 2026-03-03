@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useFilters } from "@/hooks/useFilters";
 import { ApiFilter, API_IMG_BASE } from "@/lib/api";
 
@@ -29,10 +30,12 @@ export default function TopbarFilters({ availableFilters }: Props) {
               <span className="absolute top-1 left-1 text-sm font-medium">
                 {filter.name}
               </span>
-              <img
+              <Image
                 src={`${API_IMG_BASE}${filter.image_url}`}
-                className="absolute top-0 -right-2 w-20 h-20"
                 alt={filter.name}
+                width={80}
+                height={80}
+                className="absolute top-0 -right-2 w-20 h-20"
               />
             </button>
           );
