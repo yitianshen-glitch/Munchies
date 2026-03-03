@@ -52,7 +52,7 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   const openStatusMap: Record<string, boolean> = {};
   restaurantsData.forEach((r, i) => {
-    openStatusMap[r.id] = openStatusResults[i]?.is_currently_open ?? false;
+    openStatusMap[r.id] = openStatusResults[i]?.is_open ?? false;
   });
 
   const priceRangeMap: Record<string, string> = {};

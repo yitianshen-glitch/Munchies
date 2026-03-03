@@ -23,7 +23,7 @@ export interface RestaurantsResponse {
 
 export interface OpenStatus {
   restaurant_id: string;
-  is_currently_open: boolean;
+  is_open: boolean;
 }
 
 export interface PriceRange {
