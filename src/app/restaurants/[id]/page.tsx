@@ -2,8 +2,15 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
-import { getRestaurant, getOpenStatus, getPriceRange, getFilter, API_IMG_BASE } from "@/lib/api";
+import { getRestaurants, getRestaurant, getOpenStatus, getPriceRange, getFilter, API_IMG_BASE } from "@/lib/api";
 import { getDeliveryTimeRange } from "@/utils/format";
+
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const restaurants = await getRestaurants();
+  return restaurants.map((r) => ({ id: r.id }));
+}
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -45,6 +52,8 @@ export default async function RestaurantPage({ params }: PageProps) {
                 src={`${API_IMG_BASE}${restaurant.image_url}`}
                 alt={restaurant.name}
                 fill
+                priority
+                sizes="(max-width: 672px) 100vw, 672px"
                 className="object-contain p-8"
               />
             </div>

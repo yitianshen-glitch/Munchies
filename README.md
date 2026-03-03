@@ -10,13 +10,17 @@ npm install
 
 ## Running
 
+> **Note:** `npm run dev` does not run `generateStaticParams`. To see static pre-rendering in effect, run `npm run build` then `npm start`.
+
 | Command | Description |
 |---|---|
-| `npm run dev` | Start dev server at http://localhost:3000 |
-| `npm run build` | Build for production |
-| `npm start` | Start production server |
+| `npm run build` | Build for production (pre-renders all restaurant detail pages via `generateStaticParams`) |
+| `npm start` | Start production server (serves the pre-built output from `npm run build`) |
 | `npm test` | Run tests in watch mode |
 | `npm run test:run` | Run tests once |
+| `npm run dev` | Start dev server at http://localhost:3000 |
+
+
 
 ## Stack
 
