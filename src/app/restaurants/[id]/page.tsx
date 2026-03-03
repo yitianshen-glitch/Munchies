@@ -31,7 +31,7 @@ export default async function RestaurantPage({ params }: PageProps) {
     restaurant.filter_ids?.[0] ? getFilter(restaurant.filter_ids[0]) : null,
   ]);
 
-  const isOpen = openStatus?.is_open ?? false;
+  const isOpen = openStatus?.is_currently_open ?? false;
   const deliveryTime = getDeliveryTimeRange(restaurant.delivery_time_minutes);
 
   return (

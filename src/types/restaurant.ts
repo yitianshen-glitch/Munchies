@@ -3,7 +3,6 @@ export type Restaurant = {
   name: string;
   status: "open" | "closed";
   deliveryTime: string;
-  reopen?: string;
   image: string;
   priceRange?: string;
   rating: number;

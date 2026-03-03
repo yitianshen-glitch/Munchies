@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Restaurant } from '@/types/restaurant';
 
 export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
-  const { id, name, status, deliveryTime, reopen, image } = restaurant;
+  const { id, name, status, deliveryTime, image } = restaurant;
   const isOpen = status === "open";
 
   return (
@@ -58,11 +58,6 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
         →
       </span>
 
-      {!isOpen && reopen && (
-        <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-          {reopen}
-        </span>
-      )}
     </Link>
   );
 }
