@@ -108,7 +108,7 @@ export default async function HomePage({ searchParams }: PageProps) {
             <TopbarFilters availableFilters={availableFilters} />
           </Suspense>
 
-          <h2 className="text-2xl lg:text-3xl font-semibold mb-4">Restaurant&apos;s</h2>
+          <h2 className="text-2xl lg:text-3xl font-semibold mb-4">Restaurants</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
             {filteredRestaurants.length > 0 ? (
