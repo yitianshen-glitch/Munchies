@@ -6,9 +6,10 @@ import { ApiFilter } from "@/lib/api";
 
 type Props = {
   availableFilters: ApiFilter[];
+  priceRanges: string[];
 };
 
-export default function MobileFiltersModal({ availableFilters }: Props) {
+export default function MobileFiltersModal({ availableFilters, priceRanges }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -34,7 +35,7 @@ export default function MobileFiltersModal({ availableFilters }: Props) {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto">
-              <FilterSidebar availableFilters={availableFilters} />
+              <FilterSidebar availableFilters={availableFilters} priceRanges={priceRanges} />
             </div>
           </div>
         </div>

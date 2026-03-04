@@ -6,11 +6,10 @@ import { DELIVERY_TIMES } from "@/utils/format";
 
 type Props = {
   availableFilters: ApiFilter[];
+  priceRanges: string[];
 };
 
-const PRICE_RANGES = ["$", "$$", "$$$", "$$$$"];
-
-export default function FilterSidebar({ availableFilters }: Props) {
+export default function FilterSidebar({ availableFilters, priceRanges }: Props) {
   const { filters, toggleFilter } = useFilters();
 
   return (
@@ -58,7 +57,7 @@ export default function FilterSidebar({ availableFilters }: Props) {
       <div>
         <h3 className="text-sm font-semibold text-gray-400 mb-2">PRICE RANGE</h3>
         <div className="flex flex-wrap gap-2">
-          {PRICE_RANGES.map((p) => (
+          {priceRanges.map((p) => (
             <button
               key={p}
               onClick={() => toggleFilter("priceRanges", p)}

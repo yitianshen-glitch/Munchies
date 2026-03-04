@@ -43,6 +43,8 @@ export default async function HomePage({ searchParams }: PageProps) {
     if (result) priceRangeMap[id] = result.range;
   });
 
+  const priceRanges = Object.values(priceRangeMap);
+
   const restaurants = restaurantsData.map((r) =>
     transformRestaurant(r, openStatusMap[r.id] ?? false, priceRangeMap)
   );
@@ -65,14 +67,14 @@ export default async function HomePage({ searchParams }: PageProps) {
       <main className="flex min-h-screen bg-gray-50 gap-6">
         <div className="hidden lg:block w-64 flex-shrink-0">
           <Suspense fallback={<div className="w-64 m-6 p-6 bg-white rounded-2xl border border-gray-200 shadow-sm" />}>
-            <FilterSidebar availableFilters={availableFilters} />
+            <FilterSidebar availableFilters={availableFilters} priceRanges={priceRanges} />
           </Suspense>
         </div>
 
         <section className="flex-1 min-w-0 p-3 lg:p-6">
           <div className="lg:hidden mb-4">
             <Suspense fallback={null}>
-              <MobileFiltersModal availableFilters={availableFilters} />
+              <MobileFiltersModal availableFilters={availableFilters} priceRanges={priceRanges} />
             </Suspense>
           </div>
 
