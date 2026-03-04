@@ -21,6 +21,10 @@ export interface RestaurantsResponse {
   restaurants: ApiRestaurant[];
 }
 
+export interface FiltersResponse {
+  filters: ApiFilter[];
+}
+
 export interface OpenStatus {
   restaurant_id: string;
   is_open: boolean;
@@ -38,7 +42,7 @@ export async function getRestaurants(): Promise<ApiRestaurant[]> {
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data: RestaurantsResponse = await response.json();
-    return data.restaurants;
+    return Array.isArray(data.restaurants) ? data.restaurants : [];
   } catch (error) {
     console.error("Error fetching restaurants:", error);
     return [];
@@ -51,7 +55,7 @@ export async function getFilters(): Promise<ApiFilter[]> {
       next: { revalidate: 3600 },
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data = await response.json();
+    const data: FiltersResponse = await response.json();
     return Array.isArray(data.filters) ? data.filters : [];
   } catch (error) {
     console.error("Error fetching filters:", error);
@@ -91,8 +95,8 @@ export async function getRestaurant(id: string): Promise<ApiRestaurant | null> {
       next: { revalidate: 60 },
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data = await response.json();
-    return data.restaurant ?? data;
+    const data: { restaurant?: ApiRestaurant } = await response.json();
+    return data.restaurant ?? null;
   } catch (error) {
     console.error("Error fetching restaurant:", error);
     return null;
@@ -105,8 +109,8 @@ export async function getFilter(id: string): Promise<ApiFilter | null> {
       next: { revalidate: 3600 },
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data = await response.json();
-    return data.filter ?? data;
+    const data: { filter?: ApiFilter } = await response.json();
+    return data.filter ?? null;
   } catch (error) {
     console.error("Error fetching filter:", error);
     return null;
