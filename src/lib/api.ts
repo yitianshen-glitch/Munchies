@@ -69,7 +69,8 @@ export async function getOpenStatus(id: string): Promise<OpenStatus | null> {
       next: { revalidate: 60 },
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return await response.json();
+    const data: OpenStatus = await response.json();
+    return data;
   } catch (error) {
     console.error("Error fetching open status:", error);
     return null;
@@ -82,7 +83,8 @@ export async function getPriceRange(id: string): Promise<PriceRange | null> {
       next: { revalidate: 3600 },
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return await response.json();
+    const data: PriceRange = await response.json();
+    return data;
   } catch (error) {
     console.error("Error fetching price range:", error);
     return null;
@@ -95,8 +97,8 @@ export async function getRestaurant(id: string): Promise<ApiRestaurant | null> {
       next: { revalidate: 60 },
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data: { restaurant?: ApiRestaurant } = await response.json();
-    return data.restaurant ?? null;
+    const data: ApiRestaurant = await response.json();
+    return data;
   } catch (error) {
     console.error("Error fetching restaurant:", error);
     return null;
@@ -109,8 +111,8 @@ export async function getFilter(id: string): Promise<ApiFilter | null> {
       next: { revalidate: 3600 },
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data: { filter?: ApiFilter } = await response.json();
-    return data.filter ?? null;
+    const data: ApiFilter = await response.json();
+    return data;
   } catch (error) {
     console.error("Error fetching filter:", error);
     return null;
