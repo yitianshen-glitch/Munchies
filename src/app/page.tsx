@@ -4,27 +4,9 @@ import RestaurantCard from "@/components/RestaurantCard";
 import FilterSidebar from "@/components/filters/FilterSidebar";
 import TopbarFilters from "@/components/filters/TopbarFilters";
 import MobileFiltersModal from "@/components/MobileFiltersModal";
-import { getRestaurants, getFilters, getPriceRange, getOpenStatus, ApiRestaurant, API_IMG_BASE } from "@/lib/api";
-import { Restaurant } from "@/types/restaurant";
-import { getDeliveryTimeRange } from "@/utils/format";
+import { getRestaurants, getFilters, getPriceRange, getOpenStatus } from "@/lib/api";
 import { filterRestaurants } from "@/utils/filterRestaurants";
-
-function transformRestaurant(
-  r: ApiRestaurant,
-  isOpen: boolean,
-  priceRangeMap: Record<string, string>
-): Restaurant {
-  return {
-    id: r.id,
-    name: r.name,
-    status: isOpen ? "open" : "closed",
-    filterIds: r.filter_ids ?? [],
-    deliveryTime: getDeliveryTimeRange(r.delivery_time_minutes),
-    image: `${API_IMG_BASE}${r.image_url}`,
-    priceRange: priceRangeMap[r.price_range_id],
-    rating: r.rating,
-  };
-}
+import { transformRestaurant } from "@/utils/transformRestaurant";
 
 type PageProps = {
   searchParams: Promise<{
