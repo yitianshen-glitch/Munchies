@@ -5,14 +5,8 @@ import { useCallback } from "react";
 
 export type Filters = {
   categories: string[];
-  deliveryTimes: string[];
-  priceRanges: string[];
-};
-
-const PARAM_KEYS: Record<keyof Filters, string> = {
-  categories: "categories",
-  deliveryTimes: "delivery",
-  priceRanges: "price",
+  delivery: string[];
+  price: string[];
 };
 
 export function useFilters() {
@@ -22,23 +16,22 @@ export function useFilters() {
 
   const filters: Filters = {
     categories: searchParams.get("categories")?.split(",").filter(Boolean) ?? [],
-    deliveryTimes: searchParams.get("delivery")?.split(",").filter(Boolean) ?? [],
-    priceRanges: searchParams.get("price")?.split(",").filter(Boolean) ?? [],
+    delivery: searchParams.get("delivery")?.split(",").filter(Boolean) ?? [],
+    price: searchParams.get("price")?.split(",").filter(Boolean) ?? [],
   };
 
   const toggleFilter = useCallback(
     (type: keyof Filters, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      const key = PARAM_KEYS[type];
-      const current = params.get(key)?.split(",").filter(Boolean) ?? [];
+      const current = params.get(type)?.split(",").filter(Boolean) ?? [];
       const updated = current.includes(value)
         ? current.filter((v) => v !== value)
         : [...current, value];
 
       if (updated.length === 0) {
-        params.delete(key);
+        params.delete(type);
       } else {
-        params.set(key, updated.join(","));
+        params.set(type, updated.join(","));
       }
 
       const query = params.toString();

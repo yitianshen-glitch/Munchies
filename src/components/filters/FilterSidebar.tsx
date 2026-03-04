@@ -41,9 +41,9 @@ export default function FilterSidebar({ availableFilters, priceRanges }: Props) 
           {DELIVERY_TIMES.map((dt) => (
             <button
               key={dt}
-              onClick={() => toggleFilter("deliveryTimes", dt)}
+              onClick={() => toggleFilter("delivery", dt)}
               className={`rounded-lg border px-3 py-1 border border-gray-200 shadow-sm flex-shrink-0 hover:shadow-xl hover:scale-105 transition-all duration-300 active:scale-95 ${
-                filters.deliveryTimes.includes(dt)
+                filters.delivery.includes(dt)
                   ? "bg-black text-white border-black"
                   : "bg-white text-gray-700 border-gray-300"
               }`}
@@ -60,9 +60,9 @@ export default function FilterSidebar({ availableFilters, priceRanges }: Props) 
           {priceRanges.map((p) => (
             <button
               key={p}
-              onClick={() => toggleFilter("priceRanges", p)}
+              onClick={() => toggleFilter("price", p)}
               className={`rounded-lg border px-3 py-1 border border-gray-200 shadow-sm flex-shrink-0 hover:shadow-xl hover:scale-105 transition-all duration-300 active:scale-95 ${
-                filters.priceRanges.includes(p)
+                filters.price.includes(p)
                   ? "bg-black text-white border-black"
                   : "bg-white text-gray-700 border-gray-300"
               }`}
