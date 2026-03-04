@@ -22,7 +22,7 @@ export function useFilters() {
 
   const toggleFilter = useCallback(
     (type: keyof Filters, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString());//searchParams is read-only, need to create a mutable copy
       const current = params.get(type)?.split(",").filter(Boolean) ?? [];
       const updated = current.includes(value)
         ? current.filter((v) => v !== value)

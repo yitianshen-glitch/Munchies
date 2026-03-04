@@ -26,7 +26,7 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   const priceRangeIds = [
     ...new Set(restaurantsData.map((r) => r.price_range_id).filter(Boolean)),
-  ];
+  ];//Removes duplicates
   const [openStatusResults, priceRangeResults] = await Promise.all([
     Promise.all(restaurantsData.map((r) => getOpenStatus(r.id))),
     Promise.all(priceRangeIds.map((id) => getPriceRange(id))),

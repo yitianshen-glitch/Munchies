@@ -6,5 +6,5 @@ export type Restaurant = {
   image: string;
   priceRange?: string;
   rating: number;
-  filterIds?: string[];
+  filterIds: string[];
 };
