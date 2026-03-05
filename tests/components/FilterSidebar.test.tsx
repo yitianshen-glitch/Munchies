@@ -28,14 +28,14 @@ describe("FilterSidebar", () => {
 
   describe("rendering", () => {
     it("renders all food category buttons from props", () => {
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       expect(screen.getByRole("button", { name: "Pizza" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Hamburger" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Coffee" })).toBeInTheDocument();
     });
 
     it("renders all delivery time options", () => {
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       expect(screen.getByRole("button", { name: "0-10 min" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "10-30 min" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "30-60 min" })).toBeInTheDocument();
@@ -43,7 +43,7 @@ describe("FilterSidebar", () => {
     });
 
     it("renders all price range options", () => {
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       expect(screen.getByRole("button", { name: "$" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "$$" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "$$$" })).toBeInTheDocument();
@@ -51,7 +51,7 @@ describe("FilterSidebar", () => {
     });
 
     it("renders empty category list when no filters passed", () => {
-      render(<FilterSidebar availableFilters={[]} />);
+      render(<FilterSidebar availableFilters={[]} priceRanges={[]} />);
       expect(screen.queryByRole("button", { name: "Pizza" })).not.toBeInTheDocument();
     });
   });
@@ -61,7 +61,7 @@ describe("FilterSidebar", () => {
       vi.mocked(useSearchParams).mockReturnValue(
         new URLSearchParams("categories=Pizza") as never
       );
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       expect(screen.getByRole("button", { name: "Pizza" })).toHaveClass("bg-black");
     });
 
@@ -69,7 +69,7 @@ describe("FilterSidebar", () => {
       vi.mocked(useSearchParams).mockReturnValue(
         new URLSearchParams("categories=Pizza") as never
       );
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       expect(screen.getByRole("button", { name: "Hamburger" })).not.toHaveClass("bg-black");
     });
 
@@ -77,7 +77,7 @@ describe("FilterSidebar", () => {
       vi.mocked(useSearchParams).mockReturnValue(
         new URLSearchParams("delivery=0-10+min") as never
       );
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       expect(screen.getByRole("button", { name: "0-10 min" })).toHaveClass("bg-black");
     });
 
@@ -85,7 +85,7 @@ describe("FilterSidebar", () => {
       vi.mocked(useSearchParams).mockReturnValue(
         new URLSearchParams("price=$$") as never
       );
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       expect(screen.getByRole("button", { name: "$$" })).toHaveClass("bg-black");
     });
   });
@@ -93,21 +93,21 @@ describe("FilterSidebar", () => {
   describe("interactions", () => {
     it("calls router.push with category param when clicking a category", async () => {
       const user = userEvent.setup();
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       await user.click(screen.getByRole("button", { name: "Pizza" }));
       expect(mockPush).toHaveBeenCalledWith("/?categories=Pizza");
     });
 
     it("calls router.push with delivery param when clicking a delivery time", async () => {
       const user = userEvent.setup();
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       await user.click(screen.getByRole("button", { name: "0-10 min" }));
       expect(mockPush).toHaveBeenCalledWith("/?delivery=0-10+min");
     });
 
     it("calls router.push with price param when clicking a price range", async () => {
       const user = userEvent.setup();
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       await user.click(screen.getByRole("button", { name: "$$" }));
       expect(mockPush).toHaveBeenCalledWith("/?price=%24%24");
     });
@@ -117,7 +117,7 @@ describe("FilterSidebar", () => {
         new URLSearchParams("categories=Pizza") as never
       );
       const user = userEvent.setup();
-      render(<FilterSidebar availableFilters={mockFilters} />);
+      render(<FilterSidebar availableFilters={mockFilters} priceRanges={["$", "$$", "$$$", "$$$$"]} />);
       await user.click(screen.getByRole("button", { name: "Pizza" }));
       expect(mockPush).toHaveBeenCalledWith("/");
     });

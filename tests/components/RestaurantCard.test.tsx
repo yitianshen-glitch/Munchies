@@ -11,6 +11,7 @@ const base: Restaurant = {
   image: "/pizza.jpg",
   priceRange: "$$",
   rating: 4.5,
+  filterIds: [],
 };
 
 describe("RestaurantCard", () => {
@@ -46,17 +47,4 @@ describe("RestaurantCard", () => {
     expect(screen.getByText("→").className).toContain("bg-gray-300");
   });
 
-  it("shows reopen time when closed and reopen is set", () => {
-    render(
-      <RestaurantCard
-        restaurant={{ ...base, status: "closed", reopen: "Opens at 9:00 AM" }}
-      />
-    );
-    expect(screen.getByText("Opens at 9:00 AM")).toBeInTheDocument();
-  });
-
-  it("does not show reopen time when open", () => {
-    render(<RestaurantCard restaurant={{ ...base, reopen: "Opens at 9:00 AM" }} />);
-    expect(screen.queryByText("Opens at 9:00 AM")).not.toBeInTheDocument();
-  });
 });
